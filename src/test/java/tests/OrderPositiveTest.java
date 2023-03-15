@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class OrderTest extends BaseTest {
+public class OrderPositiveTest extends BaseTest {
 
 
 }

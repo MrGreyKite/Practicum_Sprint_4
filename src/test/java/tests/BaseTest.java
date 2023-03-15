@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.time.Duration;
 
@@ -19,15 +18,16 @@ public class BaseTest {
 
     @BeforeClass
     public static void setUp() {
-//        WebDriverManager.chromedriver().setup();
-//      mvn test -Dwdm.defaultBrowser="firefox" - так запускать
-        System.getProperty("wdm.defaultBrowser", "chrome");
+        String defaultBrowser = "firefox";
+        //вписать нужный браузер либо передавать через mvn test -D"wdm.defaultBrowser"={browser}, но при этом ломается кодировка у меня
+
+        System.setProperty("wdm.defaultBrowser", defaultBrowser);
+        System.out.println(System.getProperty("wdm.defaultBrowser"));
         wdm = WebDriverManager.getInstance();
     }
 
     @Before
     public void start() {
-//        driver = new ChromeDriver();
         driver = wdm.create();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(WAIT_SECONDS));
         driver.get(URL);

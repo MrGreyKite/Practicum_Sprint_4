@@ -14,11 +14,25 @@ public class MainPageObject {
 
     //заголовок раздела с вопросами
     private final By importantQuestionsHeader = By.cssSelector("div.Home_FourPart__1uthg > div.Home_SubHeader__zwi_E");
+
     //текст заголовка с вопросами - для проверки скролла
     private final String textInImportantQuestionsHeader = "Вопросы о важном";
 
+    //FAQ-блок: вопрос
     private By questionInQuestionsBlockById;
+    private final String questionInQuestionBlockPattern = ".//*[@id='accordion__heading-%s']";
+
+    //FAQ-блок: ответ
     private By answerInQuestionsBlockById;
+    private final String answerInQuestionsBlockPattern = ".//*[@id='accordion__panel-%s']/p";
+
+    //Кнопка(кнопки) с текстом "Заказать"
+    private final By orderButton = By.xpath(".//button[text()='Заказать']");
+
+    //Кнопка с текстом "Статус заказа"
+    private final By checkOrderStatusButton = By.className("Header_Link__1TAG7");
+
+    //возможно, кнопки лучше вынести в компонент headerComponent, т.к. они есть на всех страницах
 
     public MainPageObject(WebDriver driver) {
         this.driver = driver;
@@ -26,10 +40,10 @@ public class MainPageObject {
     }
 
     public By getQuestionInQuestionsBlockById(String id) {
-        return questionInQuestionsBlockById = By.xpath(String.format(".//*[@id='accordion__heading-%s']", id));
+        return questionInQuestionsBlockById = By.xpath(String.format(questionInQuestionBlockPattern, id));
     }
     public By getAnswerInQuestionsBlockById(String id) {
-        return answerInQuestionsBlockById = By.xpath(String.format(".//*[@id='accordion__panel-%s']/p", id));
+        return answerInQuestionsBlockById = By.xpath(String.format(answerInQuestionsBlockPattern, id));
     }
 
     public MainPageObject scrollToImportantQuestions(){
@@ -45,6 +59,7 @@ public class MainPageObject {
         return this;
     }
 
+    //метод проверки, что ответы не отображаются раскрытыми, пока не кликнули на блок с вопросом (не исп-зуется в текущих тестах)
     public boolean answerInQuestionBlockIsHidden(String answerID) {
         return (driver.findElement(getAnswerInQuestionsBlockById(answerID)).getAttribute("hidden") != null);
     }
@@ -57,12 +72,10 @@ public class MainPageObject {
         return driver.findElement(getAnswerInQuestionsBlockById(answerID)).getText();
     }
 
-
-    public By getQuestionInQuestionsBlockById() {
-        return questionInQuestionsBlockById;
+    //метод клика на верхнюю (индекс 0) или нижнюю (индекс 1) кнопку с текстом "Заказать"
+    public OrderPageObject clickOnOrderButtonByIndex(int buttonIndex){
+        driver.findElements(orderButton).get(buttonIndex).click();
+        return new OrderPageObject(driver);
     }
 
-    public void setQuestionInQuestionsBlockById(String id) {
-        this.questionInQuestionsBlockById = By.xpath(String.format(".//*[@id='accordion__heading-%s']", id));
-    }
 }

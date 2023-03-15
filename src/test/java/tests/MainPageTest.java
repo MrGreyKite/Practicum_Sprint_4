@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class MainPageTest extends BaseTest {
 
-    @Parameterized.Parameter(value = 0)
+    @Parameterized.Parameter()
     public String questionId;
 
     @Parameterized.Parameter(value = 1)
@@ -36,7 +36,8 @@ public class MainPageTest extends BaseTest {
     public void expandQuestionsInFAQ() {
         MainPageObject mainPage = new MainPageObject(driver);
 
-        boolean isAnswerVisibleInQuestionBlock = mainPage.
+        boolean isAnswerVisibleInQuestionBlock =
+                mainPage.
                 scrollToImportantQuestions().
                 clickOnSomeQuestionInQuestionsBlock(questionId).
                 answerInQuestionBlockIsVisible(answerId);

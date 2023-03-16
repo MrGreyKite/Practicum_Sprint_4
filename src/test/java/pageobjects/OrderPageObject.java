@@ -25,7 +25,7 @@ public class OrderPageObject {
     private final By addressField = By.xpath(".//input[@placeholder='* Адрес: куда привезти заказ']");
 
     //поле для ввода номера телефона
-    private final By phoneField = By.xpath("* Телефон: на него позвонит курьер");
+    private final By phoneField = By.xpath(".//input[@placeholder='* Телефон: на него позвонит курьер']");
 
     //поле для выбора станции метро
     private final By subwayStationField = By.xpath(".//input[@placeholder='* Станция метро']");
@@ -45,9 +45,8 @@ public class OrderPageObject {
     //шаблон для подстановки времени аренды
     private final String arendTimePattern = ".//div[@role='option' and text()='%s']";
 
-    //поле "Выбор цвета" - чекбокс "черный" label[for="black"] либо сразу input[id="black"]
-
-    //поле "Выбор цвета" - чекбокс "серый" - label[for="grey"]
+    //поле "Выбор цвета" - чекбокс
+    private final String chooseColorPattern = "input[id='%s']";
 
     //поле "Комментарий для курьера"
     private final By commentaryField = By.xpath(".//input[@placeholder='Комментарий для курьера']");
@@ -55,12 +54,19 @@ public class OrderPageObject {
     //кнопка оформления заказа
     private final By doOrderButton = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Заказать']");
 
-    //модальное окно подтверждения - class Order_Modal__YZ-d3
-    //кнопка class 'Button_Button__ra12g Button_Middle__1CSJM' с текстом 'Да'
-    //поле с классом Order_ModalHeader__3FDaJ содержит текст "Заказ оформлен"
-    //кнопка "Посмотреть статус" class Order_NextButton__1_rCA
-    // записать в переменную номер заказа - ".//*[@id='root']/div/div[2]/div[5]/div[1]/div/text()[2]" getText()
-    //либо потом извлекать как value из поля после перехода по кнопке просмотра статуса
+    //модальное окно подтверждения заказа
+    private final By modalWindowForOrder = By.className("Order_Modal__YZ-d3");
+
+    //кнопка с текстом 'Да'
+    private final By okButton = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Да']");
+
+    //заголовок "Заказ оформлен"
+    private final By headerOrderIsCreated = By.xpath(".//div[@class='Order_ModalHeader__3FDaJ']");
+
+    //кнопка "Посмотреть статус"
+    private final By seeOrderButton = By.xpath(".//button[text()='Посмотреть статус']");
+
+    private final By orderNumberPath = By.xpath(".//div[@class='Order_ModalHeader__3FDaJ']/text()[2]");
 
     public OrderPageObject(WebDriver driver) {
         this.driver = driver;
@@ -77,6 +83,16 @@ public class OrderPageObject {
         return this;
     }
 
+    public OrderPageObject fillAddressField(String address) {
+        driver.findElement(addressField).sendKeys(address);
+        return this;
+    }
+
+    public OrderPageObject fillPhoneNumberField(String phoneNumber) {
+        driver.findElement(phoneField).sendKeys(phoneNumber);
+        return this;
+    }
+
     public OrderPageObject chooseSubwayStationFromList(String stationId) {
         driver.findElement(subwayStationField).click();
         driver.findElement(By.cssSelector(String.format(selectedStationPattern, stationId))).click();
@@ -88,5 +104,54 @@ public class OrderPageObject {
         webDriverWait.until(ExpectedConditions.textToBePresentInElementLocated(formHeader, "Про аренду"));
         return this;
     }
+
+    public OrderPageObject fillDateOfOrderField(String orderDate) {
+        driver.findElement(dateOfOrderField).sendKeys(orderDate);
+        return this;
+    }
+
+    public OrderPageObject chooseTimeOfArend(String timeOfArend) {
+        driver.findElement(timeOfArendField).click();
+        driver.findElement(By.xpath(String.format(arendTimePattern, timeOfArend))).click();
+        return this;
+    }
+
+    public OrderPageObject chooseColor(String colorName) {
+        driver.findElement(By.cssSelector(String.format(chooseColorPattern, colorName))).click();
+        return this;
+    }
+
+    public OrderPageObject fillCommentField(String comment) {
+        driver.findElement(commentaryField).sendKeys(comment);
+        return this;
+    }
+
+    public OrderPageObject pressDoOrder() {
+        driver.findElement(doOrderButton).click();
+        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(modalWindowForOrder));
+        return this;
+    }
+
+    public OrderPageObject pressOK() {
+        driver.findElement(okButton).click();
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(seeOrderButton));
+        return this;
+    }
+
+    public boolean orderIsCreated() {
+        return driver.findElement(headerOrderIsCreated).
+                getText().contains("Заказ оформлен");
+    }
+
+    //можно потом извлекать как value из поля после перехода по кнопке просмотра статуса
+    public String getOrderNumberFromPage() {
+        return driver.findElement(orderNumberPath).getText();
+    }
+
+    public OrderStatusPageObject goToSeeYourOrder() {
+        driver.findElement(seeOrderButton).click();
+        return new OrderStatusPageObject(driver);
+    }
+
 
 }

@@ -19,7 +19,7 @@ public class BaseTest {
     @BeforeClass
     public static void setUp() {
         String defaultBrowser = "firefox";
-        //вписать нужный браузер либо передавать через mvn test -D"wdm.defaultBrowser"={browser}, но при этом ломается кодировка у меня
+        //вписать нужный браузер либо передавать через mvn test -D"wdm.defaultBrowser"={browser}, но при этом ломается кодировка
 
         System.setProperty("wdm.defaultBrowser", defaultBrowser);
         System.out.println(System.getProperty("wdm.defaultBrowser"));

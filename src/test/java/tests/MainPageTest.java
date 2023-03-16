@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class MainPageTest extends BaseTest {
 
-    @Parameterized.Parameter()
+    @Parameterized.Parameter(value = 0)
     public String questionId;
 
     @Parameterized.Parameter(value = 1)

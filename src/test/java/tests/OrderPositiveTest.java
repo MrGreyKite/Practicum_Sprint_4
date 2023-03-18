@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import pageobjects.MainPageObject;
 import pageobjects.OrderPageObject;
+import pageobjects.OrderStatusPageObject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -45,14 +46,13 @@ public class OrderPositiveTest extends BaseTest {
     @Parameterized.Parameters(name = "{index}: выбираем кнопку с индексом {0} и заказываем на {1} {2}")
     public static Object[][] doOrderWithAllCorrectData() {
         return new Object[][] {
-                {0, "Имя", "Фамилия", "Какой-то адрес", "89039055111", "5", "22.05.2023", "сутки", "black", "Привезите вовремя"}
+                {0, "Имя", "Фамилия", "Какой-то адрес", "89039055111", "5", "22.05.2023", "сутки", "black", "Привезите вовремя"},
+                {1, "Тест", "Тестиков", "Новый дом", "890590550000", "1", "04.04.2023", "двое суток", "grey", ""}
         };
     }
 
-
-    //можно сделать assert, что все тестовые данные, введенные в поля, соответствуют данным в заказе
     @Test
-    public void createOrderTest() {
+    public void createOrderTest() throws InterruptedException {
         MainPageObject mainPage = new MainPageObject(driver);
 
         OrderPageObject orderPage = mainPage.
@@ -70,13 +70,20 @@ public class OrderPositiveTest extends BaseTest {
                 pressDoOrder().pressOK();
 
         assertTrue(orderPage.orderIsCreated());
-/*
-        String numberOfOrderCreated = orderPage.getOrderNumberFromPage();
-        String numberOfOrder = orderPage.goToSeeYourOrder().getNumberOfOrderFromField();
 
-        assertEquals("Номер созданного заказа и номер просмотренного не соответствуют",
-                numberOfOrderCreated, numberOfOrder);
-*/
+        String numberOfOrderCreated = orderPage.getOrderNumberFromPage();
+        System.out.println("Создали заказ: " + numberOfOrderCreated);
+
+        OrderStatusPageObject statusPage = orderPage.goToSeeYourOrder();
+
+        String numberOfOrder = statusPage.getNumberOfOrderFromField();
+        System.out.println("Посмотрели заказ: " + numberOfOrder);
+        assertEquals("Номер созданного заказа и номер просмотренного не совпадают", numberOfOrderCreated, numberOfOrder);
+
+        //проверяем, что данные корректны - здесь можно было бы сделать цикл
+        statusPage.assertThatOrderDataIsCorrectInSomeField("Имя", firstName);
+        statusPage.assertThatOrderDataIsCorrectInSomeField("Фамилия", lastName);
+        statusPage.assertThatOrderDataIsCorrectInSomeField("Адрес", addressForOrder);
     }
 
 

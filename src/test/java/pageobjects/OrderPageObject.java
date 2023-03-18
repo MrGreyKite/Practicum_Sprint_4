@@ -2,10 +2,13 @@ package pageobjects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OrderPageObject {
 
@@ -66,7 +69,7 @@ public class OrderPageObject {
     //кнопка "Посмотреть статус"
     private final By seeOrderButton = By.xpath(".//button[text()='Посмотреть статус']");
 
-    private final By orderNumberPath = By.xpath(".//div[@class='Order_ModalHeader__3FDaJ']/text()[2]");
+    private final By orderNumberPath = By.xpath("//*[@id='root']/div/div[2]/div[5]/div[1]/div");
 
     public OrderPageObject(WebDriver driver) {
         this.driver = driver;
@@ -143,12 +146,22 @@ public class OrderPageObject {
                 getText().contains("Заказ оформлен");
     }
 
-    //можно потом извлекать как value из поля после перехода по кнопке просмотра статуса
-    public String getOrderNumberFromPage() {
-        return driver.findElement(orderNumberPath).getText();
+    public String getOrderNumberFromPage() throws InterruptedException {
+        Thread.sleep(1000);
+        WebElement orderNumberElement = driver.findElement(orderNumberPath);
+        String orderNumberText = orderNumberElement.getText();
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(orderNumberText);
+        String orderNumber = "";
+        if (matcher.find()) {
+            orderNumber = matcher.group();
+        }
+
+        return orderNumber;
     }
 
-    public OrderStatusPageObject goToSeeYourOrder() {
+    public OrderStatusPageObject goToSeeYourOrder() throws InterruptedException {
+        Thread.sleep(1000);
         driver.findElement(seeOrderButton).click();
         return new OrderStatusPageObject(driver);
     }

@@ -17,15 +17,22 @@ public class OrderStatusPageObject {
     private final WebDriver driver;
     protected WebDriverWait webDriverWait;
 
+    //поле для ввода номера заказа
     private final By trackNumberField = By.className("Track_Input__1g7lq");
 
+    //кнопка, чтобы посмотреть заказ по введенному номеру
     private final By seeOrderByNumberButton = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Посмотреть']");
 
+    //раздел с информацией о заказе
     private final By orderInfo = By.className("Track_OrderInfo__2fpDL");
+
+    //блок "поле - значение" внутри раздела с информацией о заказе
     private final By orderInfoBlockPattern = By.cssSelector("div.Track_Row__1sN1F");
     private final By trackTitlePattern = By.cssSelector("div.Track_Title__1XfhB");
-
     private final By trackValuePattern = By.cssSelector("div.Track_Value__15eEX");
+
+    //блок с картинкой при ненахождении заказа
+    private final By blockOrderNotFound = By.className("Track_NotFound__6oaoY");
 
     public OrderStatusPageObject(WebDriver driver) {
         this.driver = driver;
@@ -46,7 +53,7 @@ public class OrderStatusPageObject {
         // все блоки с инфо о заказе на странице
         List<WebElement> informationBlocks = driver.findElements(orderInfoBlockPattern);
 
-        // карта для хранения пар "НАЗВАНИЕ_ПОЛЯ" и "ЗНАЧЕНИЕ"
+        // для хранения пар "НАЗВАНИЕ_ПОЛЯ" и "ЗНАЧЕНИЕ"
         Map<String, String> informationMap = new HashMap<>();
 
         // перебор блоков и выделение значений
@@ -67,6 +74,10 @@ public class OrderStatusPageObject {
 
     public void assertThatOrderDataIsCorrectInSomeField(String fieldName, String data) {
         assertEquals(data, this.getOrderInfoMap().get(fieldName));
+    }
+
+    public boolean isOrderNotFoundErrorVisible() {
+        return driver.findElement(blockOrderNotFound).isDisplayed();
     }
 
 }

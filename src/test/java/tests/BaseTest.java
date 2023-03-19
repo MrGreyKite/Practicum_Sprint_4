@@ -18,7 +18,7 @@ public class BaseTest {
 
     @BeforeClass
     public static void setUp() {
-        String defaultBrowser = "firefox";
+        String defaultBrowser = "chrome"; //edge, chrome, firefox
         //вписать нужный браузер либо передавать через mvn test -D"wdm.defaultBrowser"={browser}, но при этом ломается кодировка
 
         System.setProperty("wdm.defaultBrowser", defaultBrowser);

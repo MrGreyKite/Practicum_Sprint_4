@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pageobjects.components.HeaderComponent;
 
 import java.time.Duration;
 import java.util.regex.Matcher;
@@ -69,10 +70,20 @@ public class OrderPageObject {
     //кнопка "Посмотреть статус"
     private final By seeOrderButton = By.xpath(".//button[text()='Посмотреть статус']");
 
+    //для извлечения номера заказа
     private final By orderNumberPath = By.xpath("//*[@id='root']/div/div[2]/div[5]/div[1]/div");
+
+    //паттерн для красного текста с сообщением об ошибке в текстовых полях
+    private final By errorInInputField = By.cssSelector(".Input_ErrorMessage__3HvIb.Input_Visible___syz6");
+
+    //красный текст в сообщении об ошибке при выборе станции метро
+    private final By errorInMetroField = By.className("Order_MetroError__1BtZb");
+
+    private final HeaderComponent header;
 
     public OrderPageObject(WebDriver driver) {
         this.driver = driver;
+        this.header = new HeaderComponent(driver);
         webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
@@ -104,7 +115,7 @@ public class OrderPageObject {
 
     public OrderPageObject pressProceed() {
         driver.findElement(proceedButton).click();
-        webDriverWait.until(ExpectedConditions.textToBePresentInElementLocated(formHeader, "Про аренду"));
+//        webDriverWait.until(ExpectedConditions.textToBePresentInElementLocated(formHeader, "Про аренду"));
         return this;
     }
 
@@ -166,5 +177,19 @@ public class OrderPageObject {
         return new OrderStatusPageObject(driver);
     }
 
+    public boolean errorMessageIdDisplayedInInputField() {
+        WebElement errorElement = webDriverWait.until(ExpectedConditions.
+                visibilityOfElementLocated(errorInInputField));
+        return errorElement.isDisplayed();
+    }
 
+    public boolean errorMessageIsDisplayedInMetroChooser() {
+        WebElement errorElement = webDriverWait.until(ExpectedConditions.
+                visibilityOfElementLocated(errorInMetroField));
+        return errorElement.isDisplayed();
+    }
+
+    public HeaderComponent getHeader() {
+        return header;
+    }
 }

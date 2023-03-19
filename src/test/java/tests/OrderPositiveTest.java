@@ -43,7 +43,7 @@ public class OrderPositiveTest extends BaseTest {
     @Parameterized.Parameter(value = 9)
     public String comment;
 
-    @Parameterized.Parameters(name = "{index}: выбираем кнопку с индексом {0} и заказываем на {1} {2}")
+    @Parameterized.Parameters(name = "{index}: выбираем кнопку с индексом {0} и заказываем на {1} {2} по адресу {3}")
     public static Object[][] doOrderWithAllCorrectData() {
         return new Object[][] {
                 {0, "Имя", "Фамилия", "Какой-то адрес", "89039055111", "5", "22.05.2023", "сутки", "black", "Привезите вовремя"},
@@ -67,7 +67,8 @@ public class OrderPositiveTest extends BaseTest {
                 chooseColor(color).
                 fillDateOfOrderField(dateOfOrder).
                 fillCommentField(comment).
-                pressDoOrder().pressOK();
+                pressDoOrder().
+                pressOK();
 
         assertTrue(orderPage.orderIsCreated());
 
@@ -80,7 +81,8 @@ public class OrderPositiveTest extends BaseTest {
         System.out.println("Посмотрели заказ: " + numberOfOrder);
         assertEquals("Номер созданного заказа и номер просмотренного не совпадают", numberOfOrderCreated, numberOfOrder);
 
-        //проверяем, что данные корректны - здесь можно было бы сделать цикл
+        //проверяем, что данные о заказе корректны -
+        // здесь можно сделать также перебор, но для целей обучения ограничиваюсь отдельным вызовом
         statusPage.assertThatOrderDataIsCorrectInSomeField("Имя", firstName);
         statusPage.assertThatOrderDataIsCorrectInSomeField("Фамилия", lastName);
         statusPage.assertThatOrderDataIsCorrectInSomeField("Адрес", addressForOrder);

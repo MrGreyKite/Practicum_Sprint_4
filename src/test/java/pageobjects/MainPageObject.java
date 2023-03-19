@@ -5,12 +5,16 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pageobjects.components.HeaderComponent;
 
 import java.time.Duration;
 
 public class MainPageObject {
     private final WebDriver driver;
     protected WebDriverWait webDriverWait;
+
+    //главный заголовок страницы
+    private final By mainHeader = By.className("Home_Header__iJKdX");
 
     //заголовок раздела с вопросами
     private final By importantQuestionsHeader = By.cssSelector("div.Home_FourPart__1uthg > div.Home_SubHeader__zwi_E");
@@ -29,13 +33,12 @@ public class MainPageObject {
     //Кнопка(кнопки) с текстом "Заказать"
     private final By orderButton = By.xpath(".//button[text()='Заказать']");
 
-    //Кнопка с текстом "Статус заказа"
-    private final By checkOrderStatusButton = By.className("Header_Link__1TAG7");
+    private final HeaderComponent header;
 
-    //возможно, кнопки лучше вынести в компонент headerComponent, т.к. они есть на всех страницах
 
     public MainPageObject(WebDriver driver) {
         this.driver = driver;
+        this.header = new HeaderComponent(driver);
         webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
@@ -78,4 +81,12 @@ public class MainPageObject {
         return new OrderPageObject(driver);
     }
 
+    //метод проверяет, что отображается главный хедер
+    public boolean mainHeaderIsPresent() {
+        return driver.findElement(mainHeader).isDisplayed();
+    }
+
+    public HeaderComponent getHeader() {
+        return this.header;
+    }
 }

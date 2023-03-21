@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.time.Duration;
 
@@ -18,17 +20,24 @@ public class BaseTest {
 
     @BeforeClass
     public static void setUp() {
+        /*
         String defaultBrowser = "chrome"; //edge, chrome, firefox
         //вписать нужный браузер либо передавать через mvn test -D"wdm.defaultBrowser"={browser}, но при этом ломается кодировка
 
         System.setProperty("wdm.defaultBrowser", defaultBrowser);
-//        System.out.println(System.getProperty("wdm.defaultBrowser"));
         wdm = WebDriverManager.getInstance();
+        */
+
+        WebDriverManager.chromedriver().setup();
+        // WebDriverManager.firefoxdriver().setup(); - если не запустится хром
     }
 
     @Before
     public void start() {
-        driver = wdm.create();
+//        driver = wdm.create();
+        new ChromeDriver();
+//        new FirefoxDriver(); - если не запустится хром
+
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(WAIT_SECONDS));
         driver.get(URL);
         //если отображается плашка с информацией о сборе кук - подтвердить куки и закрыть плашку

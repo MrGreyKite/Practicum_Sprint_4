@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.time.Duration;
@@ -35,8 +36,10 @@ public class BaseTest {
     @Before
     public void start() {
 //        driver = wdm.create();
-        new ChromeDriver();
-//        new FirefoxDriver(); - если не запустится хром
+//        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--remote-allow-origins=*");
+//        driver = new ChromeDriver(options);
+        driver = new FirefoxDriver(); // если не запустится хром
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(WAIT_SECONDS));
         driver.get(URL);

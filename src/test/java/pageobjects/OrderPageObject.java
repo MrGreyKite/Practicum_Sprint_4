@@ -157,11 +157,11 @@ public class OrderPageObject {
                 getText().contains("Заказ оформлен");
     }
 
-    public String getOrderNumberFromPage() throws InterruptedException {
-        Thread.sleep(1000);
+    public String getOrderNumberFromPage() {
+        Pattern pattern = Pattern.compile("\\d+");
+        webDriverWait.until(ExpectedConditions.textMatches(orderNumberPath, pattern));
         WebElement orderNumberElement = driver.findElement(orderNumberPath);
         String orderNumberText = orderNumberElement.getText();
-        Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(orderNumberText);
         String orderNumber = "";
         if (matcher.find()) {
